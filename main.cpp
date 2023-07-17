@@ -68,6 +68,7 @@ public:
                 &MainWindow::ExecuteScript);
         connect(m_select_script, &QPushButton::clicked, this,
                 &MainWindow::SelectScript);
+        setGeometry(30, 30, 800, 600);
     }
 
     ~MainWindow() {}
@@ -111,7 +112,12 @@ MainWindow *MainWindow::sm_win = nullptr;
 PYBIND11_EMBEDDED_MODULE(FiberArt, m)
 {
     m.def("GetMainWindow", []()
-          { return WrapQtObject(MainWindow::GetInstance(), "QMainWindow", true); });
+          {
+              auto ptr = (void *)MainWindow::GetInstance();
+              std::cout << ptr << std::endl;
+              return reinterpret_cast<unsigned long long>(ptr);
+              //   return WrapQtObject(MainWindow::GetInstance(), "QMainWindow", true);
+          });
 }
 
 int main(int argc, char **argv)
